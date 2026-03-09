@@ -2,7 +2,7 @@
 let songs = [
     {
         name:'7th Floor Tango - Silent Partner',
-        path:'music/7th Floor Tango - Silent Partner.mp3',
+        path:'music/starfall - intentions (official music video).mp3',
         artist:'Artist Y01',
         image:'images/7th Floor Tango - Silent Partner.jpg'
     },
