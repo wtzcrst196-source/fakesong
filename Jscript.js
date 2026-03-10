@@ -1,122 +1,95 @@
-const audio = document.getElementById("audio")
+let currentSong=0;
 
-const songName = document.querySelector(".song-name")
-const artist = document.querySelector(".artist")
-const disk = document.querySelector(".box-disk")
-
-const playBtn = document.querySelector(".btn-play")
-const nextBtn = document.querySelector(".btnnext")
-const prevBtn = document.querySelector(".btnback")
-
-const seekBar = document.querySelector(".seek-bar")
-const currentTime = document.querySelector(".current-time")
-const musicTime = document.querySelector(".music-time")
-
-let songIndex = 0
+const music=document.querySelector('#audio');
+const seekbar=document.querySelector('.seek-bar');
+const artist=document.querySelector('.artist');
+const songname=document.querySelector('.song-name');
+const boxdisk=document.querySelector('.box-disk');
+const currenttimes=document.querySelector('.current-time');
+const musictime=document.querySelector('.music-time');
+const btnplay=document.querySelector('.btn-play');
+const btnback=document.querySelector('.btnback');
+const btnnext=document.querySelector('.btnnext');
 
 
-function loadSong(i){
+btnplay.addEventListener('click',()=>{
+    if(btnplay.className.includes('pause')){
+        music.play();
+    }else{
+        music.pause();
+    }
+    btnplay.classList.toggle('pause');
+    boxdisk.classList.toggle('play');
+});
 
-audio.src = songs[i].src
-songName.innerText = songs[i].name
-artist.innerText = songs[i].artist
-disk.style.backgroundImage = `url(${songs[i].cover})`
+// Cài đặt bài hát
 
+const setSong=(i)=>{
+    seekbar.value=0;
+    let song=songs[i];
+    currentSong=i;
+    music.src=song.path;
+    songname.innerHTML=song.name;
+    artist.innerHTML=song.artist;
+    boxdisk.style.backgroundImage=`url('${song.image}')`;
+
+    currenttimes.innerHTML='00:00';
+    setTimeout(()=>{
+        seekbar.max=music.duration;
+        musictime.innerHTML =formatTimes(music.duration);
+    }, 300);
 }
 
-loadSong(songIndex)
+setSong(0);
 
-
-playBtn.addEventListener("click",()=>{
-
-if(audio.paused){
-
-audio.play()
-playBtn.classList.remove("pause")
-disk.classList.add("play")
-
-}else{
-
-audio.pause()
-playBtn.classList.add("pause")
-disk.classList.remove("play")
-
+const formatTimes=(time)=>{
+    let min=Math.floor(time / 60);
+    if(min<10){
+        min=`0${min}`;
+    }
+    let sec=Math.floor(time % 60);
+    if(sec<10){
+        sec=`0${sec}`;
+    }
+    return `${min}:${sec}`;
 }
 
-})
+// Set seek bar
+setInterval(() => {
+    seekbar.value=music.currentTime;
+    currenttimes.innerHTML=formatTimes(music.currentTime);
+    if(Math.floor(music.currentTime)==Math.floor(seekbar.max)){
+        btnnext.click();
+    }
+}, 500);
 
+seekbar.addEventListener('change',()=>{
+    music.currentTime=seekbar.value;
+});
 
-nextBtn.addEventListener("click",()=>{
-
-songIndex++
-
-if(songIndex >= songs.length){
-songIndex = 0
+const playMusic=()=>{
+    music.play();
+    btnplay.classList.remove('pause');
+    boxdisk.classList.add('play');
 }
 
-loadSong(songIndex)
-audio.play()
+// Next and Preview
+btnnext.addEventListener('click',()=>{
+    if(currentSong>=songs.length-1){
+        currentSong=0;
+    }else{
+        currentSong++;
+    }
+    setSong(currentSong);
+    playMusic();
+}); 
 
-playBtn.classList.remove("pause")
-disk.classList.add("play")
-
-})
-
-
-prevBtn.addEventListener("click",()=>{
-
-songIndex--
-
-if(songIndex < 0){
-songIndex = songs.length - 1
-}
-
-loadSong(songIndex)
-audio.play()
-
-playBtn.classList.remove("pause")
-disk.classList.add("play")
-
-})
-
-
-audio.addEventListener("timeupdate",()=>{
-
-seekBar.value = audio.currentTime
-
-let min = Math.floor(audio.currentTime / 60)
-let sec = Math.floor(audio.currentTime % 60)
-
-if(sec < 10) sec = "0" + sec
-
-currentTime.innerText = min + ":" + sec
-
-})
-
-
-audio.addEventListener("loadedmetadata",()=>{
-
-seekBar.max = audio.duration
-
-let min = Math.floor(audio.duration / 60)
-let sec = Math.floor(audio.duration % 60)
-
-if(sec < 10) sec = "0" + sec
-
-musicTime.innerText = min + ":" + sec
-
-})
-
-
-seekBar.addEventListener("input",()=>{
-
-audio.currentTime = seekBar.value
-
-})
-
-
-audio.addEventListener("ended",()=>{
-
-nextBtn.click()
-
-})
+btnback.addEventListener('click',()=>{
+    if(currentSong<=0){
+        currentSong=songs.length-1;
+    }else{
+        currentSong--;
+    }
+    setSong(currentSong);
+    playMusic();
+}); 
