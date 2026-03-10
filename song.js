@@ -1,6 +1,6 @@
 const songs = [
 {
-name: "Song 1",
+name: "Consume",
 artist: "Artist 1",
 src: "songs/song1.mp3",
 cover: "images/photo-1.jpg"
