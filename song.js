@@ -1,7 +1,7 @@
 let songs = [
     {
-        name: "Song 1",
-        artist: "Artist 1",
+        name: "Comsume ",
+        artist: "A",
         path: "music/song1.mp3",
         image: "images/photo-1.jpg"
     },
